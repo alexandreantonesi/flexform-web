@@ -1,8 +1,9 @@
-// ExercisePage.js
 import React, { useState, useEffect } from 'react';
-import { Button, ListGroup, Modal } from 'react-bootstrap';
-import { format, isMonday, isTuesday, isThursday, isFriday, isSaturday } from 'date-fns';
+import { Button, ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import ExerciseModal from './ExerciseModal';
+import ExerciseItem from './ExerciseItem';
 
 const exercisesByDay = {
     push: [
@@ -28,85 +29,86 @@ const exercisesByDay = {
       { name: 'Flexão de Pernas', muscles: 'Músculos das pernas' }
     ],
   };
+
+  import React, { useState, useEffect } from 'react';
+  import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+  import { format } from 'date-fns';
+  import pt from 'date-fns/locale/pt';
+  import ExerciseModal from './ExerciseModal';
+  import ExerciseItem from './ExerciseItem';
   
-  const getTodaysExercises = () => {
-    const today = new Date();
-    if (isMonday(today) || isFriday(today)) {
-      return exercisesByDay.push;
-    } else if (isTuesday(today) || isSaturday(today)) {
-      return exercisesByDay.pull;
-    } else if (isThursday(today)) {
-      return exercisesByDay.legs;
-    } else {
-      return []; // Rest days or undefined days
-    }
-  };  
+  import React, { useState, useEffect } from 'react';
+  import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+  import { format } from 'date-fns';
+  import pt from 'date-fns/locale/pt';
+  import ExerciseModal from './ExerciseModal';
+  import ExerciseItem from './ExerciseItem';
+  
+  const ExercisePage = () => {
+    const [todaysExercises, setTodaysExercises] = useState([]);
+    const [selectedDay, setSelectedDay] = useState('');
+  
+    useEffect(() => {
+      // Assuming getTodaysExercises is a function that returns the exercises based on the day
+      setTodaysExercises(getTodaysExercises(selectedDay));
+    }, [selectedDay]);
+  
+    const handleDaySelect = (eventKey) => {
+      setSelectedDay(eventKey);
+    };
+  
+    const handleAutoSelect = () => {
+      setSelectedDay('');
+    };
+  
+    const daysOfWeek = ['Monday', 'Tuesday', 'Thursday', 'Friday', 'Saturday'];
+  
+    return (
+      <div className="m-3">
+        <DropdownButton id="day-select-dropdown" title={selectedDay || 'Selecionar Dia'} onSelect={handleDaySelect}>
+          {daysOfWeek.map(day => (
+            <Dropdown.Item key={day} eventKey={day}>
+              {format(new Date(), 'EEEE', { locale: pt })[day]}
+            </Dropdown.Item>
+          ))}
+          <Dropdown.Item eventKey="" onSelect={handleAutoSelect}>
+            Detecção Automática
+          </Dropdown.Item>
+        </DropdownButton>
+        <h2>Exercícios para hoje - {selectedDay ? format(new Date(), 'EEEE', { locale: pt })[selectedDay] : format(new Date(), 'EEEE', { locale: pt })}</h2>
+        <ListGroup>
+          {todaysExercises.length > 0 ? (
+            todaysExercises.map((exercise, index) => (
+              <ExerciseItem key={index} exercise={exercise} />
+            ))
+          ) : (
+            <p>Descanso ou dia não definido</p>
+          )}
+        </ListGroup>
+      </div>
+    );
+  }; 
 
-const ExerciseModal = ({ show, handleClose, exercise }) => {
-  return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>{exercise.name}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {/* You can include more detailed information or video here */}
-        <p>{exercise.description}</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={() => {
-          // Logic to start exercise routine
-        }}>
-          Start Routine
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
+const [manualDay, setManualDay] = useState('');
+
+const handleDaySelect = (day) => {
+  setManualDay(day);
 };
 
-const ExerciseItem = ({ exercise }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  return (
-    <>
-      <ListGroup.Item action onClick={() => setShowModal(true)}>
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h5>{exercise.name}</h5>
-            <p>Músculos envolvidos: {exercise.muscles}</p>
-          </div>
-          <Button variant="primary">Iniciar</Button>
-        </div>
-      </ListGroup.Item>
-
-      <ExerciseModal
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        exercise={exercise}
-      />
-    </>
-  );
+const handleAutoSelect = () => {
+  setManualDay('');
 };
 
-const ExercisePage = () => {
-  const [todaysExercises, setTodaysExercises] = useState([]);
+const getTodaysExercises = (selectedDay) => {
+  const dayMap = {
+    'Monday': 'push',
+    'Tuesday': 'pull',
+    'Thursday': 'legs',
+    'Friday': 'push',
+    'Saturday': 'pull',
+  };
 
-  useEffect(() => {
-    setTodaysExercises(getTodaysExercises());
-  }, []);
-
-  return (
-    <div className="m-3">
-      <h2>Exercícios para hoje - {format(new Date(), 'EEEE', { locale: pt })}</h2>
-      <ListGroup>
-        {todaysExercises.length > 0 ? todaysExercises.map((exercise, index) => (
-          <ExerciseItem key={index} exercise={exercise} />
-        )) : <p>Descanso ou dia não definido</p>}
-      </ListGroup>
-    </div>
-  );
+  return exercisesByDay[dayMap[selectedDay]] || [];
 };
 
 export default ExercisePage;
