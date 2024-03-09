@@ -1,0 +1,15 @@
+.rest-day-ui .rest-day-tips {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .rest-day-tips li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .rest-day-tips li img {
+    margin-right: 10px;
+  }
+  
