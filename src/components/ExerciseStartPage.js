@@ -29,6 +29,18 @@ const ExerciseStartPage = () => {
     return null;
   }
 
+  // Function to handle the "Começar Exercício" button click
+  const handleStartExercise = () => {
+    console.log('Starting exercise:', exercise.name);
+    // Here you would add the code to interact with the Arduino or start the exercise logic
+  };
+
+  // Function to handle the "Ver Tutorial" button click
+  const handleShowTutorial = () => {
+    console.log('Showing tutorial for:', exercise.name);
+    // Here you would add the code to show the tutorial for the exercise
+  };
+
   // This function returns an array of JSX elements, each one being an image tag for the muscle icon
   const muscleIconsElements = exercise.muscles.split(', ').map((muscle, index) => {
     const icon = muscleIcons[muscle.toLowerCase()]; // Get the icon based on the muscle name
@@ -44,16 +56,16 @@ const ExerciseStartPage = () => {
       />
       <h2>{exercise.name}</h2>
       <div>
-        <h4 style={{ marginTop: '50px' }}>Músculos envolvidos:</h4>
+        <h4>Músculos envolvidos:</h4>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
           {muscleIconsElements}
         </div>
       </div>
       <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'space-around', maxWidth: '500px', margin: 'auto' }}>
-        <Button variant="primary" size="lg">
+        <Button variant="primary" size="lg" onClick={handleStartExercise}>
           Começar Exercício
         </Button>
-        <Button variant="secondary" size="lg" style={{ marginLeft: '30px' }}> {/* Added marginLeft for spacing */}
+        <Button variant="secondary" size="lg" style={{ marginLeft: '30px' }} onClick={handleShowTutorial}>
           Ver Tutorial
         </Button>
       </div>

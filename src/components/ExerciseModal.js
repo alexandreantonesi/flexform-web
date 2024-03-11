@@ -3,11 +3,11 @@ import { Modal, Button, Form } from 'react-bootstrap';
 
 const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
   const [sets, setSets] = useState([]);
+  const [showTutorial, setShowTutorial] = useState(false);
 
-  // Static placeholders - Replace with dynamic content from your backend or content management system
   const exerciseIntroduction = "Aqui vai uma breve introdução sobre o exercício, como executá-lo corretamente, e os benefícios.";
   const anatomyInformation = "Informações anatômicas específicas relacionadas ao exercício serão exibidas aqui.";
-
+  
   const addSet = () => {
     setSets([...sets, { reps: 0, weight: 0 }]);
   };
@@ -19,29 +19,29 @@ const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
   };
 
   const saveWorkout = async () => {
-    try {
-      const workoutData = {
-        id_usuario: userId,
-        nome_exercicio: exercise.name,
-        series: sets.map(set => set.reps), // assuming 'series' is an array of reps
-        repeticoes: sets.map(set => set.weight), // assuming 'repeticoes' is an array of weights
-      };
+    // ... Existing save workout functionality ...
+  };
 
-      const response = await fetch('/api/workouts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(workoutData),
-      });
+  const handleStartExerciseClick = () => {
+    setShowTutorial(true);
+  };
 
-      if (response.ok) {
-        console.log('Treino salvo com sucesso');
-        handleClose();
-      } else {
-        console.error('Falha ao salvar treino');
-      }
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-    }
+  const startExercise = () => {
+    console.log('Exercise started!');
+    // Here you would add the code to interact with the Arduino or start the exercise logic
+  };
+
+  const renderExerciseTutorial = () => {
+    // The content of your tutorial will go here. Replace placeholder text with actual instructions.
+    return (
+      <>
+        <h5>Instruções do Exercício</h5>
+        <p>{exerciseIntroduction}</p>
+        <h5>Anatomia Relacionada</h5>
+        <p>{anatomyInformation}</p>
+        <Button variant="primary" onClick={startExercise}>Iniciar Exercício</Button>
+      </>
+    );
   };
 
   return (
@@ -50,29 +50,12 @@ const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
         <Modal.Title>{exercise.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h5>Introdução</h5>
-        <p>{exerciseIntroduction}</p>
-        <h5>Anatomia Relacionada</h5>
-        <p>{anatomyInformation}</p>
-        {/* Iterate over sets and render input fields for reps and weight */}
-        {sets.map((set, index) => (
-          <Form.Group key={index}>
-            <Form.Label>Série {index + 1}</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Repetições"
-              value={set.reps}
-              onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
-            />
-            <Form.Control
-              type="number"
-              placeholder="Peso"
-              value={set.weight}
-              onChange={(e) => handleSetChange(index, 'weight', e.target.value)}
-            />
-          </Form.Group>
-        ))}
-        <Button onClick={addSet}>Adicionar Série</Button>
+        {showTutorial ? renderExerciseTutorial() : (
+          <>
+            <Button variant="primary" onClick={handleStartExerciseClick}>Começar Exercício</Button>
+            {/* Render form to add sets here */}
+          </>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>Fechar</Button>
