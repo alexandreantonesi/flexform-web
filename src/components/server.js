@@ -1,46 +1,49 @@
+// server.js
 const express = require('express');
 const mysql = require('mysql');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
 
-// Create the connection to the database
-const connection = mysql.createConnection({
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Criação da conexão com a base de dados
+const conexao = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'flexform'
 });
 
-// Connect to MySQL
-connection.connect(error => {
-  if (error) throw error;
-  console.log("Entrámos na base de dados baby");
+// Conectar ao MySQL
+conexao.connect(erro => {
+  if (erro) throw erro;
+  console.log("Conectado à base de dados FlexForm");
 });
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-// Endpoint to create a workout entry
-app.post('/api/workouts', (req, res) => {
-  const data = req.body;
-  const query = 'INSERT INTO treinos SET ?';
-  connection.query(query, data, (error, results) => {
-    if (error) throw error;
-    res.status(201).send(`Adicionado workout com id ${results.insertId}`);
+// Endpoint para login
+app.post('/api/login', (req, res) => {
+  const { nomeUtilizador, senha } = req.body;
+  conexao.query('SELECT * FROM utilizadores WHERE nome_utilizador = ?', [nomeUtilizador], async (erro, resultados) => {
+    if (erro) {
+      res.status(500).send('Ocorreu um erro no servidor');
+    } else if (resultados.length > 0) {
+      const utilizador = resultados[0];
+      const senhaCorreta = await bcrypt.compare(senha, utilizador.senha_hash);
+      if (senhaCorreta) {
+        res.status(200).send('Login efetuado com sucesso.');
+      } else {
+        res.status(401).send('Credenciais incorretas.');
+      }
+    } else {
+      res.status(404).send('Utilizador não encontrado.');
+    }
   });
 });
 
-// Endpoint to get workouts by user ID
-app.get('/api/workouts/:id_usuario', (req, res) => {
-  const { id_usuario } = req.params;
-  connection.query('SELECT * FROM treinos WHERE id_usuario = ?', [id_usuario], (error, results) => {
-    if (error) throw error;
-    res.status(200).json(results);
-  });
-});
-
-// Set your port
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`A rodar na porta ${PORT}.`);
+// Definir a porta
+const PORTA = process.env.PORT || 3001;
+app.listen(PORTA, () => {
+  console.log(`Servidor a correr na porta ${PORTA}.`);
 });

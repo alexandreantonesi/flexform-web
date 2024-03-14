@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
-import ExerciseItem from './ExerciseItem';
+import ExerciseItem from './ItemExercicio';
 import stopIcon from '../assets/icons/stop.png';
 import nutritionIcon from '../assets/icons/nutrition.png';
 import sleepIcon from '../assets/icons/sleep.png';

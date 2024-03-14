@@ -1,29 +1,30 @@
+// ModalExercicio.js
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
+const ModalExercicio = ({ mostrar, fechar, exercicio, idUsuario }) => {
   const [sets, setSets] = useState([]);
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [mostrarTutorial, setMostrarTutorial] = useState(false);
 
-  const exerciseIntroduction = "Aqui vai uma breve introdução sobre o exercício, como executá-lo corretamente, e os benefícios.";
-  const anatomyInformation = "Informações anatômicas específicas relacionadas ao exercício serão exibidas aqui.";
+  const introducaoExercicio = "Aqui vai uma breve introdução sobre o exercício, como executá-lo corretamente, e os benefícios.";
+  const informacoesAnatomia = "Informações anatômicas específicas relacionadas ao exercício serão exibidas aqui.";
   
-  const addSet = () => {
+  const adicionarSet = () => {
     setSets([...sets, { reps: 0, weight: 0 }]);
   };
 
-  const handleSetChange = (index, field, value) => {
-    const updatedSets = [...sets];
-    updatedSets[index][field] = Number(value);
-    setSets(updatedSets);
+  const handleSetChange = (index, campo, valor) => {
+    const setsAtualizados = [...sets];
+    setsAtualizados[index][campo] = Number(valor);
+    setSets(setsAtualizados);
   };
 
-  const saveWorkout = async () => {
+  const salvarTreino = async () => {
     // ... Existing save workout functionality ...
   };
 
   const handleStartExerciseClick = () => {
-    setShowTutorial(true);
+    setMostrarTutorial(true);
   };
 
   const startExercise = () => {
@@ -36,21 +37,21 @@ const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
     return (
       <>
         <h5>Instruções do Exercício</h5>
-        <p>{exerciseIntroduction}</p>
+        <p>{introducaoExercicio}</p>
         <h5>Anatomia Relacionada</h5>
-        <p>{anatomyInformation}</p>
+        <p>{informacoesAnatomia}</p>
         <Button variant="primary" onClick={startExercise}>Iniciar Exercício</Button>
       </>
     );
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={mostrar} onHide={fechar}>
       <Modal.Header closeButton>
-        <Modal.Title>{exercise.name}</Modal.Title>
+        <Modal.Title>{exercicio.nome}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {showTutorial ? renderExerciseTutorial() : (
+        {mostrarTutorial ? renderExerciseTutorial() : (
           <>
             <Button variant="primary" onClick={handleStartExerciseClick}>Começar Exercício</Button>
             {/* Render form to add sets here */}
@@ -58,11 +59,11 @@ const ExerciseModal = ({ show, handleClose, exercise, userId }) => {
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>Fechar</Button>
-        <Button variant="primary" onClick={saveWorkout}>Salvar Treino</Button>
+        <Button variant="secondary" onClick={fechar}>Fechar</Button>
+        <Button variant="primary" onClick={salvarTreino}>Salvar Treino</Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default ExerciseModal;
+export default ModalExercicio;

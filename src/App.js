@@ -1,21 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NavigationBar from './components/NavigationBar';
-import ExercisePage from './components/ExercisePage';
-import ExerciseStartPage from './components/ExerciseStartPage'; // Make sure this component exists
-import AnatomyPage from './components/AnatomyPage';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import BarraDeNavegação from './components/BarraNavegacao.js';
+import PaginaDeExercicios from './components/PaginaExercicios.js';
+import PaginaDeInicioDeExercicio from './components/PaginaInicioExercicio';
+import PaginaDeAnatomia from './components/PaginaAnatomia';
+import PaginaDeLogin from './components/PaginaLogin.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <NavigationBar />
+        <BarraDeNavegação />
         <Routes>
-          <Route path="/" element={<ExercisePage />} />
-          <Route path="/exercicios" element={<ExercisePage />} />
-          <Route path="/anatomia" element={<AnatomyPage />} />
-          <Route path="/start-exercise" element={<ExerciseStartPage />} /> {/* This line is new */}
+          <Route path="/" element={<PaginaDeExercicios />} />
+          <Route path="/exercicios" element={<PaginaDeExercicios />} />
+          <Route path="/anatomia" element={<PaginaDeAnatomia />} />
+          <Route path="/iniciar-exercicio" element={<PaginaDeInicioDeExercicio />} />
+          <Route path="/login" element={<PaginaDeLogin />} /> {/* Adiciona esta linha para a rota de login */}
         </Routes>
       </div>
     </Router>
