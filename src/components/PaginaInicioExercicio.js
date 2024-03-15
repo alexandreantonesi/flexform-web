@@ -3,14 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { ArrowLeftCircle } from 'react-bootstrap-icons';
 
-// Import all your muscle icons here
 import sternocostal_head_chestIcon from '../assets/icons/muscles/sternocostal_head_chest.png';
 import clavicular_head_chestIcon from '../assets/icons/muscles/clavicular_head_chest.png';
 import tricepsIcon from '../assets/icons/muscles/triceps.png';
 import deltoidIcon from '../assets/icons/muscles/deltoid.png';
-// ... other imports
 
-// This object maps muscle names to their respective icons
 const muscleIcons = {
   'cabeça esternocostal do peitoral maior': sternocostal_head_chestIcon,
   'cabeça clavicular do peitoral maior': clavicular_head_chestIcon,
