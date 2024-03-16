@@ -15,6 +15,7 @@
 }
 
 .login-container label {
+  display: block; /* Ensure the label is on its own line */
   margin-bottom: 0.5rem;
 }
 
@@ -23,6 +24,11 @@
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%; /* Ensure input fields fill the width of the form */
+}
+
+.login-container .form-group {
+  margin-bottom: 1rem; /* Space between form groups */
 }
 
 .login-container button {

@@ -1,9 +1,11 @@
 // PaginaRegistro.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Registro.css';
 
 const PaginaRegistro = () => {
+  const [registroCompleto, setRegistroCompleto] = useState(false);
+  const navigate = useNavigate();
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [dadosRegistro, setDadosRegistro] = useState({
     nome: '',
@@ -17,28 +19,28 @@ const PaginaRegistro = () => {
   };
 
   const finalizarRegistro = async () => {
-    const endpoint = 'http://localhost/api/PaginaRegistro.php';
-  
-    try {
-      const response = await axios.post(endpoint, {
-        nome: dadosRegistro.nome,
-        senha: dadosRegistro.senha,
-        dias_disponiveis: dadosRegistro.dias_disponiveis,
-        horas_disponiveis: dadosRegistro.horas_disponiveis
-      });
-
-      console.log(response.data);
-      // Handle the response here, e.g., showing a success message or redirecting the user
-    } catch (error) {
-      console.error(error.response ? error.response.data : error.message);
-      // Handle the error here, e.g., showing an error message to the user
-    }
+    setRegistroCompleto(true);
+    setTimeout(() => {
+      navigate('/login');
+    }, 3000);
   };
+
+  if (registroCompleto) {
+    return (
+      <div className="container-registro">
+        <div className="card-registro">
+          <h2>Registro concluído com sucesso</h2>
+          <p>Serás redirecionado em breve</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container-registro">
       <div className="card-registro">
-        {/* Step 1: User Name */}
+        {/* Renderiza a etapa atual do formulário de registro */}
+        {/* Etapa 1 - Nome de Utilizador */}
         {etapaAtual === 1 && (
           <>
             <label htmlFor="nome">Nome de Utilizador:</label>
@@ -51,7 +53,7 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(2)}>Próximo</button>
           </>
         )}
-        {/* Step 2: Password */}
+        {/* Etapa 2 - Senha */}
         {etapaAtual === 2 && (
           <>
             <label htmlFor="senha">Senha:</label>
@@ -65,7 +67,7 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(3)}>Próximo</button>
           </>
         )}
-        {/* Step 3: Availability */}
+        {/* Etapa 3 - Disponibilidade */}
         {etapaAtual === 3 && (
           <>
             <div className="form-group">
@@ -83,7 +85,7 @@ const PaginaRegistro = () => {
               </select>
             </div>
             <div className="form-group">
-            <label htmlFor="horas_disponiveis">Número de horas disponíveis semanalmente:</label>
+              <label htmlFor="horas_disponiveis">Número de horas disponíveis semanalmente:</label>
               <select
                 id="horas_disponiveis"
                 value={dadosRegistro.horas_disponiveis}
@@ -95,10 +97,8 @@ const PaginaRegistro = () => {
                 <option value="120">120 minutos</option>
               </select>
             </div>
-            <div className="navigation-buttons">
-              <button onClick={() => setEtapaAtual(2)}>Anterior</button>
-              <button onClick={finalizarRegistro}>Finalizar</button>
-            </div>
+            <button onClick={() => setEtapaAtual(2)}>Anterior</button>
+            <button onClick={finalizarRegistro}>Finalizar</button>
           </>
         )}
       </div>
