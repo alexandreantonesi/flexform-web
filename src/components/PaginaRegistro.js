@@ -17,7 +17,7 @@ const PaginaRegistro = () => {
   };
 
   const finalizarRegistro = async () => {
-    const endpoint = '/api/basedados.php';
+    const endpoint = 'http://localhost/api/PaginaRegistro.php';
   
     try {
       const response = await axios.post(endpoint, {
@@ -28,14 +28,17 @@ const PaginaRegistro = () => {
       });
 
       console.log(response.data);
+      // Handle the response here, e.g., showing a success message or redirecting the user
     } catch (error) {
-      console.error(error);
+      console.error(error.response ? error.response.data : error.message);
+      // Handle the error here, e.g., showing an error message to the user
     }
   };
 
   return (
     <div className="container-registro">
       <div className="card-registro">
+        {/* Step 1: User Name */}
         {etapaAtual === 1 && (
           <>
             <label htmlFor="nome">Nome de Utilizador:</label>
@@ -48,6 +51,7 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(2)}>Próximo</button>
           </>
         )}
+        {/* Step 2: Password */}
         {etapaAtual === 2 && (
           <>
             <label htmlFor="senha">Senha:</label>
@@ -61,6 +65,7 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(3)}>Próximo</button>
           </>
         )}
+        {/* Step 3: Availability */}
         {etapaAtual === 3 && (
           <>
             <div className="form-group">

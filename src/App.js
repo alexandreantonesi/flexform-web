@@ -7,7 +7,6 @@ import PaginaDeAnatomia from './components/PaginaAnatomia';
 import PaginaLogin from './components/PaginaLogin.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PaginaRegistro from './components/PaginaRegistro.js';
-import PaginaRegistroPhp from './api/PaginaRegistro.php';
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
           <Route path="/exercicios" element={<PaginaDeExercicios />} />
           <Route path="/anatomia" element={<PaginaDeAnatomia />} />
           <Route path="/iniciar-exercicio" element={<PaginaInicioExercicio />} />
-          <Route path="/registrar-php" element={<PaginaRegistroPhp />} />
           <Route path="/registrar" element={<PaginaRegistro />} />
           <Route path="/login" element={<PaginaLogin />} /> {/* Adiciona esta linha para a rota de login */}
         </Routes>
