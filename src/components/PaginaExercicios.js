@@ -8,6 +8,9 @@ import nutritionIcon from '../assets/icons/nutrition.png';
 import sleepIcon from '../assets/icons/sleep.png';
 import avoidIcon from '../assets/icons/avoid.png';
 
+// Assume-se que diasDisponiveis é obtido de algum lugar, por exemplo, do perfil do usuário
+const diasDisponiveis = 5; // Exemplo, este valor deverá ser dinâmico
+
 const exercisesByDay = {
   push: [
     { name: 'Supino com Halteres', muscles: 'Cabeça esternocostal do peitoral maior, tríceps, deltoides anteriores' },
@@ -44,16 +47,68 @@ const dayMap = {
   'Sunday': 'domingo',
 };
 
-const getTodaysExercises = (day) => {
-  const exercisePlan = {
-    'Monday': 'push',
-    'Tuesday': 'pull',
-    'Wednesday': 'rest',
-    'Thursday': 'legs',
-    'Friday': 'push',
-    'Saturday': 'pull',
-    'Sunday': 'rest',
-  };
+const getTodaysExercises = (day, diasDisponiveis) => {
+  // Logic to determine the exercises based on available days
+  let exercisePlan = {};
+
+  switch(diasDisponiveis) {
+    case 5:
+      exercisePlan = {
+        'Monday': 'push',
+        'Tuesday': 'pull',
+        'Wednesday': 'rest',
+        'Thursday': 'legs',
+        'Friday': 'push',
+        'Saturday': 'pull',
+        'Sunday': 'rest',
+      };
+      break;
+    case 4:
+      exercisePlan = {
+        'Monday': 'push',
+        'Tuesday': 'pull',
+        'Wednesday': 'rest',
+        'Thursday': 'push',
+        'Friday': 'pull',
+        'Saturday': 'rest',
+        'Sunday': 'rest',
+      };
+      break;
+    case 3:
+      exercisePlan = {
+        'Monday': 'push',
+        'Tuesday': 'pull',
+        'Wednesday': 'rest',
+        'Thursday': 'legs',
+        'Friday': 'rest',
+        'Saturday': 'rest',
+        'Sunday': 'rest',
+      };
+      break;
+    case 2:
+      exercisePlan = {
+        'Monday': 'push',
+        'Tuesday': 'rest',
+        'Wednesday': 'rest',
+        'Thursday': 'pull',
+        'Friday': 'rest',
+        'Saturday': 'rest',
+        'Sunday': 'rest',
+      };
+      break;
+    default:
+      // Default to 5 days if an unsupported number of days is provided
+      exercisePlan = {
+        'Monday': 'push',
+        'Tuesday': 'pull',
+        'Wednesday': 'rest',
+        'Thursday': 'legs',
+        'Friday': 'push',
+        'Saturday': 'pull',
+        'Sunday': 'rest',
+      };
+      break;
+  }
 
   return exercisesByDay[exercisePlan[day]] || [];
 };
@@ -64,20 +119,21 @@ const ExercisePage = () => {
 
   useEffect(() => {
     const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
-    setSelectedDay(dayMap[todayFormatted.toLowerCase()]);
-    setTodaysExercises(getTodaysExercises(dayMap[todayFormatted.toLowerCase()]));
+    const dayInEnglish = Object.keys(dayMap).find(key => dayMap[key] === todayFormatted);
+    setSelectedDay(dayMap[todayFormatted]);
+    setTodaysExercises(getTodaysExercises(dayInEnglish, diasDisponiveis));
   }, []);
 
   const handleDaySelect = (eventKey, event) => {
-    setSelectedDay(eventKey);
-    setTodaysExercises(getTodaysExercises(eventKey));
+    setSelectedDay(dayMap[eventKey]);
+    setTodaysExercises(getTodaysExercises(eventKey, diasDisponiveis));
   };
 
   const handleAutoSelect = () => {
     const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
-    const englishDay = Object.keys(dayMap).find(key => dayMap[key] === todayFormatted.toLowerCase());
-    setSelectedDay(englishDay);
-    setTodaysExercises(getTodaysExercises(englishDay));
+    const dayInEnglish = Object.keys(dayMap).find(key => dayMap[key] === todayFormatted);
+    setSelectedDay(dayMap[todayFormatted]);
+    setTodaysExercises(getTodaysExercises(dayInEnglish, diasDisponiveis));
   };
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -85,7 +141,7 @@ const ExercisePage = () => {
 
   return (
     <div className='m-3'>
-      <DropdownButton id='day-select-dropdown' title={selectedDay ? dayMap[selectedDay] : 'Selecionar Dia'} onSelect={handleDaySelect}>
+      <DropdownButton id='day-select-dropdown' title={selectedDay ? selectedDay : 'Selecionar Dia'} onSelect={handleDaySelect}>
         {dayNames.map((dayName, index) => (
           <Dropdown.Item key={daysOfWeek[index]} eventKey={daysOfWeek[index]}>
             {dayName}
@@ -95,33 +151,14 @@ const ExercisePage = () => {
           Detecção Automática
         </Dropdown.Item>
       </DropdownButton>
-      <h2>Exercícios para hoje - {selectedDay ? dayMap[selectedDay] : 'Hoje'}</h2>
+      <h2>Exercícios para hoje - {selectedDay ? selectedDay : 'Hoje'}</h2>
       <ListGroup>
         {todaysExercises.length > 0 ? (
           todaysExercises.map((exercise, index) => (
             <ExerciseItem key={index} exercise={exercise} />
           ))
-        ) : selectedDay && (selectedDay === 'Wednesday' || selectedDay === 'Sunday') ? (
-          <div className="rest-day-ui" style={{ textAlign: 'center' }}>
-            <img src={stopIcon} alt="" style={{ maxWidth: '200px', margin: '0 auto' }} />
-            <h1 style={{ marginTop: '20px' }}>Hoje é dia de descanso.</h1>
-            <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-              <h5 style={{ marginBottom: '10px' }}>
-                <img src={nutritionIcon} alt="Nutrition" style={{ maxWidth: '50px', marginRight: '10px', marginTop: '50px' }} />
-                Assegura-te de atingires uma nutrição adequada para fornecer ao teu corpo o que necessita para a tua recuperação, bem como a construção de novas fibras musculares
-              </h5>
-              <h5 style={{ marginBottom: '10px' }}>
-                <img src={sleepIcon} alt="" style={{ maxWidth: '50px', marginRight: '10px', marginTop: '50px' }} />
-                O sono é de extrema importância, é aqui que uma grande parte da construção e reparação de fibras musculares, aproveita-o como uma chave essencial para o teu crescimento (recomendado 7 - 9 horas de sono por noite)
-              </h5>
-              <h5 style={{ marginBottom: '10px' }}>
-                <img src={avoidIcon} alt="" style={{ maxWidth: '50px', marginRight: '10px', marginTop: '50px', marginBlockEnd: '50px' }} />
-                Evita esforço físico desnecessário
-              </h5>
-            </ul>
-          </div>
         ) : (
-          <p>Descanso ou dia não definido</p>
+          <p>Nenhum exercício planejado para hoje.</p>
         )}
       </ListGroup>
     </div>

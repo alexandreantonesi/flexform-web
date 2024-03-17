@@ -1,10 +1,10 @@
 // PaginaRegistro.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/Registro.css';
 
 const PaginaRegistro = () => {
-  const [registroCompleto, setRegistroCompleto] = useState(false);
   const navigate = useNavigate();
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [dadosRegistro, setDadosRegistro] = useState({
@@ -19,28 +19,24 @@ const PaginaRegistro = () => {
   };
 
   const finalizarRegistro = async () => {
-    setRegistroCompleto(true);
-    setTimeout(() => {
-      navigate('/login');
-    }, 3000);
+    const url = 'http://localhost/api/PaginaRegistro.php';
+    try {
+      const response = await axios.post(url, dadosRegistro);
+      if (response.data.sucesso) {
+        alert('Registro concluído com sucesso!');
+        navigate('/login');
+      } else {
+        alert(response.data.mensagem || 'Falha no registro.');
+      }
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      alert('Ocorreu um erro ao registrar. Tente novamente mais tarde.');
+    }
   };
-
-  if (registroCompleto) {
-    return (
-      <div className="container-registro">
-        <div className="card-registro">
-          <h2>Registro concluído com sucesso</h2>
-          <p>Serás redirecionado em breve</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="container-registro">
       <div className="card-registro">
-        {/* Renderiza a etapa atual do formulário de registro */}
-        {/* Etapa 1 - Nome de Utilizador */}
         {etapaAtual === 1 && (
           <>
             <label htmlFor="nome">Nome de Utilizador:</label>
@@ -53,7 +49,6 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(2)}>Próximo</button>
           </>
         )}
-        {/* Etapa 2 - Senha */}
         {etapaAtual === 2 && (
           <>
             <label htmlFor="senha">Senha:</label>
@@ -67,7 +62,6 @@ const PaginaRegistro = () => {
             <button onClick={() => setEtapaAtual(3)}>Próximo</button>
           </>
         )}
-        {/* Etapa 3 - Disponibilidade */}
         {etapaAtual === 3 && (
           <>
             <div className="form-group">

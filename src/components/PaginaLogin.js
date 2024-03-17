@@ -1,5 +1,4 @@
-// PaginaLogin.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Login.css'; // Verifique se o caminho está correto.
@@ -10,6 +9,14 @@ const PaginaLogin = () => {
     nome: '',
     senha: ''
   });
+
+  useEffect(() => {
+    // Verifica se o usuário já está logado
+    const sessaoAtiva = localStorage.getItem('sessaoAtiva');
+    if (sessaoAtiva) {
+      navigate('/exercicios'); // Redireciona para a página de exercícios se já estiver logado
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +31,14 @@ const PaginaLogin = () => {
     try {
       const response = await axios.post('http://localhost/api/PaginaLogin.php', credenciais);
       if (response.data.sucesso) {
-        // Se o login for bem sucedido, redirecione para a página de exercícios
-        navigate('/exercicios');
+        localStorage.setItem('sessaoAtiva', 'true');
+        localStorage.setItem('tokenDeSessao', response.data.tokenDeSessao); // Assumindo que o backend envia um token de sessão
+
+        navigate('/exercicios'); // Redireciona para a página de exercícios após o login bem-sucedido
       } else {
-        // Se o login falhar, exiba uma mensagem de erro
         alert(response.data.mensagem || 'Login falhou.');
       }
     } catch (error) {
-      // Trate erros na requisição, como problemas de rede
       console.error('Erro ao fazer login:', error);
       alert('Ocorreu um erro ao fazer login. Tente novamente mais tarde.');
     }
