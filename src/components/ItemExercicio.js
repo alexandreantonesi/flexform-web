@@ -10,6 +10,13 @@ const ItemExercicio = ({ exercicio }) => {
     navegar('/inicio-exercicio', { state: { exercicio } });
   };
 
+  console.log('Received exercise:', exercicio);
+
+  if (!exercicio || !exercicio.nome || !exercicio.musculos) {
+    console.error('Exercise data is missing or incomplete:', exercicio);
+    return <p>Dados do exercício não estão disponíveis.</p>;
+  }
+
   return (
     <ListGroupItem>
       <div className="item-exercicio">

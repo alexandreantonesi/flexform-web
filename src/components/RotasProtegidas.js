@@ -1,28 +1,35 @@
 // RotasProtegidas.js
-import React, { useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import PaginaDeExercicios from './PaginaExercicios';
+
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import PaginaExercicios from './PaginaExercicios';
 import PaginaInicioExercicio from './PaginaInicioExercicio';
 import PaginaDeAnatomia from './PaginaAnatomia';
 import PaginaConta from './PaginaConta';
+import PaginaLogin from './PaginaLogin';
+
+const checkAuth = () => {
+  const sessaoAtiva = localStorage.getItem('sessaoAtiva'); // This is just an example
+  console.log('Session active:', sessaoAtiva); // This will log true or false
+  return sessaoAtiva;
+};
+
+const ProtectedRoute = ({ children }) => {
+  if (!checkAuth()) {
+    // User is not authenticated, redirect to the login page
+    return <Navigate to="/login" />;
+  }
+  return children;
+};
 
 const RotasProtegidas = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const sessaoAtiva = localStorage.getItem('sessaoAtiva');
-    if (!sessaoAtiva) {
-      navigate('/login');
-    }
-  }, [navigate]);
-
   return (
     <Routes>
-      <Route path="/exercicios" element={<PaginaDeExercicios />} />
-      <Route path="/anatomia" element={<PaginaDeAnatomia />} />
-      <Route path="/iniciar-exercicio" element={<PaginaInicioExercicio />} />
-      <Route path="/conta" element={<PaginaConta />} />
-      {/* Adicione mais rotas protegidas conforme necessário */}
+      <Route path="/exercicios" element={<ProtectedRoute><PaginaExercicios /></ProtectedRoute>} />
+      <Route path="/inicio-exercicio" element={<ProtectedRoute><PaginaInicioExercicio /></ProtectedRoute>} />
+      <Route path="/anatomia" element={<ProtectedRoute><PaginaDeAnatomia /></ProtectedRoute>} />
+      <Route path="/conta" element={<ProtectedRoute><PaginaConta /></ProtectedRoute>} />
+      {/* Add more protected routes here */}
     </Routes>
   );
 };
