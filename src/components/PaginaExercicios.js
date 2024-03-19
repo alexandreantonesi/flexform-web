@@ -41,32 +41,37 @@ const exercisesByDay = {
   rest: []
 };
 
+
 const getTodaysExercises = (day, availableDays) => {
-  const dayInEnglish = Object.keys(dayMap).find(key => dayMap[key] === day);
-  let exercisePlan = {};
+  const dayIndex = new Date().getDay();
+  const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const today = week[dayIndex];
 
-  // Logic to determine which exercises to do based on the available days
-  if (availableDays === 5) {
-    exercisePlan = {
-      'Monday': 'push', 'Tuesday': 'pull', 'Thursday': 'legs',
-      'Friday': 'push', 'Saturday': 'pull'
-    };
-  } else if (availableDays === 4) {
-    exercisePlan = {
-      'Monday': 'push', 'Tuesday': 'pull', 'Thursday': 'push', 'Friday': 'pull'
-    };
-  } else if (availableDays === 3) {
-    exercisePlan = {
-      'Monday': 'push', 'Tuesday': 'pull', 'Thursday': 'legs'
-    };
-  } else if (availableDays === 2) {
-    exercisePlan = {
-      'Monday': 'push', 'Thursday': 'pull'
-    };
+  const scheduleKey = availableDays.toString();
+  const schedule = {
+    '2': ['monday', 'thursday'],
+    '3': ['monday', 'wednesday', 'friday'],
+    '4': ['monday', 'tuesday', 'thursday', 'friday'],
+    '5': ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+  };
+
+  const workoutTypeMap = {
+    'monday': 'push',
+    'tuesday': 'pull',
+    'wednesday': 'legs',
+    'thursday': 'push',
+    'friday': 'pull',
+  };
+
+  const workoutDays = schedule[scheduleKey] || [];
+  if (workoutDays.includes(today)) {
+    const workoutType = workoutTypeMap[today];
+    return exercisesByDay[workoutType] || [];
+  } else {
+    return exercisesByDay['rest'] || [];
   }
-
-  return exercisesByDay[exercisePlan[dayInEnglish]] || [];
 };
+
 
 const PaginaExercicios = () => {
   const [diasDisponiveis, setDiasDisponiveis] = useState(0);
@@ -77,10 +82,13 @@ const PaginaExercicios = () => {
     const fetchDiasDisponiveis = async () => {
       try {
         const { data } = await axios.get('/api/obterDiasDisponiveis.php');
-        setDiasDisponiveis(data.dias_disponiveis);
-        const today = format(new Date(), 'EEEE', { locale: pt });
-        setDiaSelecionado(dayMap[today]);
-        setExerciciosHoje(getTodaysExercises(dayMap[today], data.dias_disponiveis));
+    console.log('Data from obterDiasDisponiveis:', data);
+        if (data.sucesso) {
+          setDiasDisponiveis(data.dias_disponiveis);
+          const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
+          setDiaSelecionado(dayMap[todayFormatted]);
+          setExerciciosHoje(getTodaysExercises(dayMap[todayFormatted], data.dias_disponiveis));
+        }
       } catch (error) {
         console.error('Erro ao obter os dias disponíveis: ', error);
       }
@@ -98,6 +106,11 @@ const PaginaExercicios = () => {
   const handleDaySelect = (eventKey) => {
     const selectedDay = dayMap[eventKey];
     setDiaSelecionado(selectedDay);
+    // Debug: Verifique se o dia selecionado está sendo definido corretamente
+    console.log('Dia selecionado:', selectedDay);
+    setExerciciosHoje(getTodaysExercises(selectedDay, diasDisponiveis));
+    // Debug: Verifique se os exercícios de hoje estão sendo definidos corretamente
+    console.log('Exercícios para hoje:', getTodaysExercises(selectedDay, diasDisponiveis));
   };
 
   return (
