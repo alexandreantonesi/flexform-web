@@ -17,7 +17,7 @@ function App() {
           <Route path="/*" element={<RotasProtegidas />} />
           <Route path="/login" element={<PaginaLogin />} />
           <Route path="/registrar" element={<PaginaRegistro />} />
-          {/* Ensure other paths are added here if they're not part of RotasProtegidas */}
+          {}
         </Routes>
       </div>
     </Router>

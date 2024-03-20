@@ -7,7 +7,7 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Align children vertically in the center */
+  align-items: center;
 }
 
 .login-container form {
@@ -15,7 +15,7 @@
 }
 
 .login-container label {
-  display: block; /* Ensure the label is on its own line */
+  display: block;
   margin-bottom: 0.5rem;
 }
 
@@ -24,37 +24,36 @@
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 100%; /* Ensure input fields fill the width of the form */
+  width: 100%;
 }
 
 .login-container .form-group {
-  margin-bottom: 1rem; /* Space between form groups */
+  margin-bottom: 1rem;
 }
 
 .login-container button {
   padding: 0.5rem;
-  margin-bottom: 0.5rem; /* Space between buttons and the input above */
+  margin-bottom: 0.5rem;
   border: none;
   border-radius: 4px;
   background-color: #007bff;
   color: white;
   cursor: pointer;
-  width: 100%; /* Full width buttons */
+  width: 100%;
 }
 
 .login-container button:not(:last-child) {
-  margin-bottom: 1rem; /* Add space between buttons */
+  margin-bottom: 1rem;
 }
 
 .login-container button:hover {
   background-color: #0056b3;
 }
 
-/* Add this to create a wrapper for buttons */
 .botoes-autenticacao {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* Stretch button width to fill the container */
-  gap: 10px; /* Adds space between buttons */
+  align-items: stretch;
+  gap: 10px;
 }

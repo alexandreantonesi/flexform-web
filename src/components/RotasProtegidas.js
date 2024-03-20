@@ -9,14 +9,13 @@ import PaginaConta from './PaginaConta';
 import PaginaLogin from './PaginaLogin';
 
 const checkAuth = () => {
-  const sessaoAtiva = localStorage.getItem('sessaoAtiva'); // This is just an example
-  console.log('Session active:', sessaoAtiva); // This will log true or false
+  const sessaoAtiva = localStorage.getItem('sessaoAtiva');
+  console.log('sessao ativa:', sessaoAtiva);
   return sessaoAtiva;
 };
 
 const ProtectedRoute = ({ children }) => {
   if (!checkAuth()) {
-    // User is not authenticated, redirect to the login page
     return <Navigate to="/login" />;
   }
   return children;
@@ -29,7 +28,7 @@ const RotasProtegidas = () => {
       <Route path="/inicio-exercicio" element={<ProtectedRoute><PaginaInicioExercicio /></ProtectedRoute>} />
       <Route path="/anatomia" element={<ProtectedRoute><PaginaDeAnatomia /></ProtectedRoute>} />
       <Route path="/conta" element={<ProtectedRoute><PaginaConta /></ProtectedRoute>} />
-      {/* Add more protected routes here */}
+      {}
     </Routes>
   );
 };

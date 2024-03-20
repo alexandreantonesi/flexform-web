@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
@@ -40,53 +41,41 @@ const exercisesByDay = {
   rest: []
 };
 
-const getTodaysExercises = (day, availableDays) => {
-  const dayIndex = new Date().getDay();
-  const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  const today = week[dayIndex];
-
-  const scheduleKey = availableDays.toString();
+function getTodaysExercises(day) {
   const schedule = {
-    '2': ['monday', 'thursday'],
-    '3': ['monday', 'wednesday', 'friday'],
-    '4': ['monday', 'tuesday', 'thursday', 'friday'],
-    '5': ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+    'segunda-feira': 'push',
+    'terça-feira': 'pull',
+    'quarta-feira': 'legs',
+    'quinta-feira': 'push',
+    'sexta-feira': 'pull',
+    'sábado': 'rest',
+    'domingo': 'rest',
   };
 
-  const workoutTypeMap = {
-    'monday': 'push',
-    'tuesday': 'pull',
-    'wednesday': 'legs',
-    'thursday': 'push',
-    'friday': 'pull',
-  };
-
-  const workoutDays = schedule[scheduleKey] || [];
-  if (workoutDays.includes(today)) {
-    const workoutType = workoutTypeMap[today];
-    return exercisesByDay[workoutType] || [];
-  } else {
-    return exercisesByDay['rest'] || [];
-  }
-};
+  const workoutType = schedule[day.toLowerCase()];
+  return workoutType ? exercisesByDay[workoutType] : [];
+}
 
 const PaginaExercicios = () => {
-  const [diasDisponiveis] = useState(3); // Hardcoded value of 3 days per week
+  const navigate = useNavigate();
   const [exerciciosHoje, setExerciciosHoje] = useState([]);
   const [diaSelecionado, setDiaSelecionado] = useState('');
 
   useEffect(() => {
     const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
     const mappedToday = dayMap[todayFormatted] || todayFormatted;
-
     setDiaSelecionado(mappedToday);
-    setExerciciosHoje(getTodaysExercises(mappedToday, 3)); // Use the hardcoded value of 3
+    setExerciciosHoje(getTodaysExercises(mappedToday));
   }, []);
 
   const handleDaySelect = (eventKey) => {
     const selectedDay = dayMap[eventKey];
     setDiaSelecionado(selectedDay);
-    setExerciciosHoje(getTodaysExercises(selectedDay, 3)); // Use the hardcoded value of 3
+    setExerciciosHoje(getTodaysExercises(selectedDay));
+  };
+
+  const navigateToExerciseStart = (exercise) => {
+    navigate('/inicio-exercicio', { state: { exercise } });
   };
 
   return (
@@ -97,16 +86,14 @@ const PaginaExercicios = () => {
         onSelect={handleDaySelect}
       >
         {Object.keys(dayMap).map(day => (
-          <Dropdown.Item key={day} eventKey={day}>
-            {dayMap[day]}
-          </Dropdown.Item>
+          <Dropdown.Item key={day} eventKey={day}>{dayMap[day]}</Dropdown.Item>
         ))}
       </DropdownButton>
       <h2>Exercícios para hoje - {diaSelecionado}</h2>
       <ListGroup>
         {exerciciosHoje.length > 0 ? (
-          exerciciosHoje.map((exercicio, index) => (
-            <ItemExercicio key={index} exercicio={exercicio} />
+          exerciciosHoje.map((exercise, index) => (
+            <ItemExercicio key={index} exercise={exercise} navigateToExerciseStart={navigateToExerciseStart} />
           ))
         ) : (
           <p>Nenhum exercício planejado para hoje.</p>

@@ -30,7 +30,7 @@ const PaginaRegistro = () => {
       }
     } catch (error) {
       console.error('Erro ao registrar:', error);
-      alert('Ocorreu um erro ao registrar. Tente novamente mais tarde.');
+      alert('Ocorreu um erro ao registrar, tenta novamente mais tarde');
     }
   };
 
