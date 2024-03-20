@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import axios from 'axios';
 import ItemExercicio from './ItemExercicio';
 
 const dayMap = {
@@ -41,7 +40,6 @@ const exercisesByDay = {
   rest: []
 };
 
-
 const getTodaysExercises = (day, availableDays) => {
   const dayIndex = new Date().getDay();
   const week = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -72,45 +70,23 @@ const getTodaysExercises = (day, availableDays) => {
   }
 };
 
-
 const PaginaExercicios = () => {
-  const [diasDisponiveis, setDiasDisponiveis] = useState(0);
+  const [diasDisponiveis] = useState(3); // Hardcoded value of 3 days per week
   const [exerciciosHoje, setExerciciosHoje] = useState([]);
   const [diaSelecionado, setDiaSelecionado] = useState('');
 
   useEffect(() => {
-    const fetchDiasDisponiveis = async () => {
-      try {
-        const { data } = await axios.get('/api/obterDiasDisponiveis.php');
-    console.log('Data from obterDiasDisponiveis:', data);
-        if (data.sucesso) {
-          setDiasDisponiveis(data.dias_disponiveis);
-          const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
-          setDiaSelecionado(dayMap[todayFormatted]);
-          setExerciciosHoje(getTodaysExercises(dayMap[todayFormatted], data.dias_disponiveis));
-        }
-      } catch (error) {
-        console.error('Erro ao obter os dias disponíveis: ', error);
-      }
-    };
+    const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
+    const mappedToday = dayMap[todayFormatted] || todayFormatted;
 
-    fetchDiasDisponiveis();
+    setDiaSelecionado(mappedToday);
+    setExerciciosHoje(getTodaysExercises(mappedToday, 3)); // Use the hardcoded value of 3
   }, []);
-
-  useEffect(() => {
-    if (diaSelecionado) {
-      setExerciciosHoje(getTodaysExercises(diaSelecionado, diasDisponiveis));
-    }
-  }, [diaSelecionado, diasDisponiveis]);
 
   const handleDaySelect = (eventKey) => {
     const selectedDay = dayMap[eventKey];
     setDiaSelecionado(selectedDay);
-    // Debug: Verifique se o dia selecionado está sendo definido corretamente
-    console.log('Dia selecionado:', selectedDay);
-    setExerciciosHoje(getTodaysExercises(selectedDay, diasDisponiveis));
-    // Debug: Verifique se os exercícios de hoje estão sendo definidos corretamente
-    console.log('Exercícios para hoje:', getTodaysExercises(selectedDay, diasDisponiveis));
+    setExerciciosHoje(getTodaysExercises(selectedDay, 3)); // Use the hardcoded value of 3
   };
 
   return (
