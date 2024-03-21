@@ -1,23 +1,18 @@
-// ItemExercicio.js
+//ItemExercicio.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, ListGroupItem } from 'react-bootstrap';
 
 const ItemExercicio = ({ exercicio }) => {
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
   const iniciarExercicio = () => {
-    // Ensure that we have the necessary exercise data
-    if (exercicio && exercicio.name && exercicio.muscles) {
-      navigate('/inicio-exercicio', { state: { exercicio } });
-    } else {
-      console.error('Attempted to start exercise with invalid data:', exercicio);
-    }
-  };
+    navigate('/iniciar-exercicio');
+  };  
 
-  if (!exercicio || typeof exercicio !== 'object' || !exercicio.name || !exercicio.muscles) {
-    console.error('Exercise data is missing or incomplete:', exercicio);
-    return <p>Não foi possível obter os dados do exercício. Verifique se os dados estão corretos.</p>;
+  if (!exercicio || !exercicio.name || !exercicio.muscles) {
+    console.error('Dados do exercício ausentes ou incompletos:', exercicio);
+    return <p>Dados do exercício não estão disponíveis.</p>;
   }
 
   return (

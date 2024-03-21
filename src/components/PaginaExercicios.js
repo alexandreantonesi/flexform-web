@@ -2,18 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns';
-import { pt } from 'date-fns/locale';
+import { ptBR } from 'date-fns/locale';
 import ItemExercicio from './ItemExercicio';
-
-const dayMap = {
-  'Monday': 'segunda-feira',
-  'Tuesday': 'terça-feira',
-  'Wednesday': 'quarta-feira',
-  'Thursday': 'quinta-feira',
-  'Friday': 'sexta-feira',
-  'Saturday': 'sábado',
-  'Sunday': 'domingo',
-};
 
 const exercisesByDay = {
   push: [
@@ -41,12 +31,22 @@ const exercisesByDay = {
   rest: []
 };
 
+const dayMap = {
+  'Monday': 'segunda-feira',
+  'Tuesday': 'terça-feira',
+  'Wednesday': 'quarta-feira',
+  'Thursday': 'quinta-feira',
+  'Friday': 'sexta-feira',
+  'Saturday': 'sábado',
+  'Sunday': 'domingo',
+};
+
 const PaginaExercicios = () => {
   const [exerciciosHoje, setExerciciosHoje] = useState([]);
   const [diaSelecionado, setDiaSelecionado] = useState('');
 
   useEffect(() => {
-    const todayFormatted = format(new Date(), 'EEEE', { locale: pt });
+    const todayFormatted = format(new Date(), 'EEEE', { locale: ptBR });
     const mappedToday = dayMap[todayFormatted] || todayFormatted;
     setDiaSelecionado(mappedToday);
     setExerciciosHoje(getTodaysExercises(mappedToday));
@@ -58,6 +58,17 @@ const PaginaExercicios = () => {
     setExerciciosHoje(getTodaysExercises(selectedDay));
   };
 
+  function getTodaysExercises(day) {
+    const schedule = {
+      'segunda-feira': 'push',
+      'quarta-feira': 'legs',
+      'sexta-feira': 'pull',
+    };
+
+    const workoutType = schedule[day];
+    return workoutType ? exercisesByDay[workoutType] : [];
+  }
+
   return (
     <div className="exercise-page">
       <DropdownButton
@@ -65,7 +76,7 @@ const PaginaExercicios = () => {
         title={diaSelecionado || 'Selecionar Dia'}
         onSelect={handleDaySelect}
       >
-        {Object.keys(dayMap).map(day => (
+        {Object.keys(dayMap).map((day) => (
           <Dropdown.Item key={day} eventKey={day}>{dayMap[day]}</Dropdown.Item>
         ))}
       </DropdownButton>
@@ -84,16 +95,3 @@ const PaginaExercicios = () => {
 };
 
 export default PaginaExercicios;
-
-function getTodaysExercises(day) {
-  // The schedule object will map days to workout types.
-  const schedule = {
-    'segunda-feira': 'push',
-    'quarta-feira': 'pull',
-    'sexta-feira': 'legs',
-    // Additional days and types can be added here.
-  };
-
-  const workoutType = schedule[day];
-  return workoutType ? exercisesByDay[workoutType] : [];
-}
