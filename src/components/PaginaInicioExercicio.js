@@ -18,36 +18,36 @@ const muscleIcons = {
 const ExerciseStartPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { exercise } = state || {};
   const [reps, setReps] = useState('');
   const [weight, setWeight] = useState('');
-  
+  const exercise = state?.exercise;
+
   useEffect(() => {
-    if (!state || !state.exercise) {
+    if (!exercise) {
       navigate('/exercicios');
     }
-  }, [navigate, state]);
-  
-
-  if (!exercise) {
-    navigate('/exercicios');
-    return null;
-  }
+  }, [navigate, exercise]);
 
   const handleStartExercise = () => {
-    console.log('exercicio inciiado:', exercise.name);
+    console.log('Starting exercise:', exercise?.name);
   };
 
   const handleShowTutorial = () => {
-    console.log('a mostrar tutorial para:', exercise.name);
+    console.log('Showing tutorial for:', exercise?.name);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('exercicio:', exercise.name, 'Reps:', reps, 'Peso:', weight);
+    console.log('Exercise:', exercise?.name, 'Reps:', reps, 'Weight:', weight);
+    
     setReps('');
     setWeight('');
   };
+
+  
+  if (!exercise) {
+    return <div>Loading...</div>;
+  }
 
   const muscleIconsElements = exercise.muscles.split(', ').map((muscle, index) => {
     const icon = muscleIcons[muscle.toLowerCase()];
@@ -56,11 +56,7 @@ const ExerciseStartPage = () => {
 
   return (
     <div className="exercise-start-page" style={{ textAlign: 'center', marginTop: '50px' }}>
-      <ArrowLeftCircle
-        size={30}
-        onClick={() => navigate(-1)}
-        style={{ cursor: 'pointer', marginBottom: '20px' }}
-      />
+      <ArrowLeftCircle size={30} onClick={() => navigate(-1)} style={{ cursor: 'pointer', marginBottom: '20px' }} />
       <h2>{exercise.name}</h2>
       <div>
         <h4>Músculos envolvidos:</h4>
@@ -79,7 +75,7 @@ const ExerciseStartPage = () => {
           />
         </InputGroup>
         <InputGroup className="mb-3">
-          <InputGroup.Text>Weight</InputGroup.Text>
+          <InputGroup.Text>Peso</InputGroup.Text>
           <FormControl
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
@@ -87,17 +83,11 @@ const ExerciseStartPage = () => {
             placeholder="Peso utilizado"
           />
         </InputGroup>
-        <Button variant="success" type="submit">
-          Marcar como concluído
-        </Button>
+        <Button variant="success" type="submit">Marcar como concluído</Button>
       </Form>
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-around', maxWidth: '500px', margin: 'auto' }}>
-        <Button variant="primary" size="lg" onClick={handleStartExercise}>
-          Iniciar exercício
-        </Button>
-        <Button variant="secondary" size="lg" style={{ marginLeft: '30px' }} onClick={handleShowTutorial}>
-          Ver tutorial
-        </Button>
+        <Button variant="primary" size="lg" onClick={handleStartExercise}>Iniciar Exercício</Button>
+        <Button variant="secondary" size="lg" onClick={handleShowTutorial}>Ver Tutorial</Button>
       </div>
     </div>
   );

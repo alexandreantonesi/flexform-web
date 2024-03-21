@@ -1,5 +1,5 @@
+// PaginaExercicios.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ListGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
@@ -41,23 +41,7 @@ const exercisesByDay = {
   rest: []
 };
 
-function getTodaysExercises(day) {
-  const schedule = {
-    'segunda-feira': 'push',
-    'terça-feira': 'pull',
-    'quarta-feira': 'legs',
-    'quinta-feira': 'push',
-    'sexta-feira': 'pull',
-    'sábado': 'rest',
-    'domingo': 'rest',
-  };
-
-  const workoutType = schedule[day.toLowerCase()];
-  return workoutType ? exercisesByDay[workoutType] : [];
-}
-
 const PaginaExercicios = () => {
-  const navigate = useNavigate();
   const [exerciciosHoje, setExerciciosHoje] = useState([]);
   const [diaSelecionado, setDiaSelecionado] = useState('');
 
@@ -74,10 +58,6 @@ const PaginaExercicios = () => {
     setExerciciosHoje(getTodaysExercises(selectedDay));
   };
 
-  const navigateToExerciseStart = (exercise) => {
-    navigate('/inicio-exercicio', { state: { exercise } });
-  };
-
   return (
     <div className="exercise-page">
       <DropdownButton
@@ -92,8 +72,8 @@ const PaginaExercicios = () => {
       <h2>Exercícios para hoje - {diaSelecionado}</h2>
       <ListGroup>
         {exerciciosHoje.length > 0 ? (
-          exerciciosHoje.map((exercise, index) => (
-            <ItemExercicio key={index} exercise={exercise} navigateToExerciseStart={navigateToExerciseStart} />
+          exerciciosHoje.map((exercicio, index) => (
+            <ItemExercicio key={index} exercicio={exercicio} />
           ))
         ) : (
           <p>Nenhum exercício planejado para hoje.</p>
@@ -104,3 +84,16 @@ const PaginaExercicios = () => {
 };
 
 export default PaginaExercicios;
+
+function getTodaysExercises(day) {
+  // The schedule object will map days to workout types.
+  const schedule = {
+    'segunda-feira': 'push',
+    'quarta-feira': 'pull',
+    'sexta-feira': 'legs',
+    // Additional days and types can be added here.
+  };
+
+  const workoutType = schedule[day];
+  return workoutType ? exercisesByDay[workoutType] : [];
+}

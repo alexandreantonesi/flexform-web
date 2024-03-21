@@ -4,17 +4,20 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ListGroupItem } from 'react-bootstrap';
 
 const ItemExercicio = ({ exercicio }) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const iniciarExercicio = () => {
-    navigate('/inicio-exercicio', { state: { exercicio } });
+    // Ensure that we have the necessary exercise data
+    if (exercicio && exercicio.name && exercicio.muscles) {
+      navigate('/inicio-exercicio', { state: { exercicio } });
+    } else {
+      console.error('Attempted to start exercise with invalid data:', exercicio);
+    }
   };
 
-  console.log('recebido exercicio:', exercicio);
-
-  if (!exercicio || !exercicio.name || !exercicio.muscles) {
-    console.error('dados do exercicio nao recebidos:', exercicio);
-    return <p>Não foi possível obter os dsados do exercício...</p>;
+  if (!exercicio || typeof exercicio !== 'object' || !exercicio.name || !exercicio.muscles) {
+    console.error('Exercise data is missing or incomplete:', exercicio);
+    return <p>Não foi possível obter os dados do exercício. Verifique se os dados estão corretos.</p>;
   }
 
   return (
