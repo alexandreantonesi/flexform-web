@@ -6,7 +6,7 @@ import BarraNavegacao from './components/BarraNavegacao';
 import PaginaLogin from './components/PaginaLogin';
 import PaginaRegistro from './components/PaginaRegistro';
 import RotasProtegidas from './components/RotasProtegidas';
-import PaginaInicioExercicio from './components/PaginaInicioExercicio'; // Import PaginaInicioExercicio component
+import PaginaInicioExercicio from './components/PaginaInicioExercicio';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
           <Route path="/*" element={<RotasProtegidas />} />
           <Route path="/login" element={<PaginaLogin />} />
           <Route path="/registrar" element={<PaginaRegistro />} />
-          <Route path="/inicio-exercicio" element={<PaginaInicioExercicio />} /> {/* Add this route */}
+          <Route path="/inicio-exercicio" element={<PaginaInicioExercicio />} /> {}
           {}
         </Routes>
       </div>
